@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Pre-receive hook script to deny merge of pull requests which are more than 35 hours old
+
+# Get the current date and time in seconds since epoch
+current_date=$(date +%s)
+
+# Get the pull request creation date from the environment variable (assuming it's set)
+# Replace `PULL_REQUEST_CREATION_DATE` with the actual environment variable or method to get the PR creation date
+pr_creation_date=$(git log -1 --pretty=format:%ct)
+
+# Calculate the age of the pull request in minutes
+pr_age_minutes=$(( (current_date - pr_creation_date) / 60 ))
+
+# Check if the pull request is more than 2 minutes old
+if [ "$pr_age_minutes" -gt 2 ]; then
+  # Deny the merge
+  echo "Pull request is more than 2 minutes old. Merge denied."
+  exit 1
+else
+  # Allow the merge
+  exit 0
+fi
